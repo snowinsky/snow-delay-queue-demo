@@ -20,10 +20,10 @@ public class ScheduledThreadPoolTest {
 
     public static void main(String[] args) {
 
-        Runnable delayTask = () -> out.println("delay do it="+ LocalDateTime.now());
-        Runnable runTask = () -> out.println("do it now="+LocalDateTime.now());
+        Runnable delayTask = () -> out.println("delay do it=" + LocalDateTime.now());
+        Runnable runTask = () -> out.println("do it now=" + LocalDateTime.now());
 
-        out.println("now="+LocalDateTime.now());
+        out.println("now=" + LocalDateTime.now());
         DELAY_RUN_POOL.schedule(delayTask, 2000L, TimeUnit.MILLISECONDS);
         COMMON_POOL.submit(runTask);
 
@@ -50,7 +50,7 @@ public class ScheduledThreadPoolTest {
     }
 
     public static ExecutorService restoreJobExecutor() {
-        ExecutorService restoreJobExecutor = new ThreadPoolExecutor(
+        return new ThreadPoolExecutor(
                 4
                 , 10
                 , 0L
@@ -59,6 +59,5 @@ public class ScheduledThreadPoolTest {
                 , new ThreadFactoryBuilder().setDaemon(true).setNameFormat("restore-job-pool-%d").build()
                 , new ThreadPoolExecutor.CallerRunsPolicy()
         );
-        return restoreJobExecutor;
     }
 }

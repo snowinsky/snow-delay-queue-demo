@@ -40,9 +40,9 @@ public interface IDelayMessage {
     LocalDateTime getActualConsumeTime();
 
     default String string(){
-        return "messageCode=" + getDelayMessageCode() + "\n" +
-                "sendTime=" + getSendTime() + "\n" +
+        return "\nmessageCode=" + getDelayMessageCode() + "\n" +
                 "delay=" + getDelayDuration() + "\n" +
+                "producerrSendTime=" + getSendTime() + "\n" +
                 "expectConsumeTime=" + getExpireTime() + "\n" +
                 "actualConsumeTime=" + getActualConsumeTime() + "\n";
     }

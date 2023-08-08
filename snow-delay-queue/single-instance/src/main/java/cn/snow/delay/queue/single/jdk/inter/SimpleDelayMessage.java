@@ -1,16 +1,34 @@
 package cn.snow.delay.queue.single.jdk.inter;
 
+import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-public class SimpleDelayMessage implements IDelayMessage {
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
+public class SimpleDelayMessage implements IDelayMessage, Serializable {
+
+    private static final long serialVersionUID = 6109958166003180610L;
     private String messageCode;
     private Object messageContent;
     private LocalDateTime sendTime;
     private Duration delayDuration;
     private LocalDateTime expireTime;
     private LocalDateTime actualConsumeTime;
+
+    public SimpleDelayMessage(String messageCode, long delayMillis) {
+        this.messageCode = messageCode;
+        sendTime = LocalDateTime.now();
+        delayDuration = Duration.ofMillis(delayMillis);
+        expireTime = sendTime.plus(delayDuration);
+        log.info("==> produce the message={}", string());
+    }
+
+    public SimpleDelayMessage(String messageCode, long delayMillis, Object messageContent) {
+        this(messageCode, delayMillis);
+        this.messageContent = messageContent;
+    }
 
 
     @Override
@@ -41,6 +59,7 @@ public class SimpleDelayMessage implements IDelayMessage {
     @Override
     public void setActualConsumeTime(LocalDateTime actualConsumeTime) {
         this.actualConsumeTime = actualConsumeTime;
+        log.info("<=== consume the message={}", string());
     }
 
     @Override
