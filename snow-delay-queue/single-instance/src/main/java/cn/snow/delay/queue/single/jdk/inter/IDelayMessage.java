@@ -5,6 +5,16 @@ import java.time.LocalDateTime;
 
 public interface IDelayMessage {
 
+    default IDelayMessage delayMessage(String messageCode, Object messageContent, Duration delayDuration) {
+        setDelayMessageCode(messageCode);
+        setDelayMessageContent(messageContent);
+        setDelayDuration(delayDuration);
+        setSendTime(LocalDateTime.now());
+        setExpireTime(getSendTime().plus(delayDuration));
+        setActualConsumeTime(null);
+        return this;
+    }
+
     void setDelayMessageCode(String messageCode);
 
     void setDelayMessageContent(Object messageContent);
@@ -28,5 +38,13 @@ public interface IDelayMessage {
     LocalDateTime getExpireTime();
 
     LocalDateTime getActualConsumeTime();
+
+    default String string(){
+        return "messageCode=" + getDelayMessageCode() + "\n" +
+                "sendTime=" + getSendTime() + "\n" +
+                "delay=" + getDelayDuration() + "\n" +
+                "expectConsumeTime=" + getExpireTime() + "\n" +
+                "actualConsumeTime=" + getActualConsumeTime() + "\n";
+    }
 
 }
