@@ -1,5 +1,6 @@
 package cn.snow.delay.queue.redis.redisson;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 
@@ -43,6 +44,7 @@ public class RedissonDelayQueue {
             for (; ; ) {
                 SimpleDelayMessage sm = blockingQueue.take();
                 sm.setActualConsumeTime(LocalDateTime.now());
+                log.info("##### delay consume time={}", Duration.between(sm.getExpireTime(), sm.getActualConsumeTime()).toMillis());
             }
         }
     }
@@ -51,9 +53,14 @@ public class RedissonDelayQueue {
     public static void main(String[] args) throws InterruptedException {
 
         Producer p = new Producer();
-        p.send(new SimpleDelayMessage("1", 3000L));
-        p.send(new SimpleDelayMessage("2", 1000L));
-        p.send(new SimpleDelayMessage("3", 2000L));
+        for (int i = 0; i < 5000; i++) {
+            new Thread(() -> {
+                p.send(new SimpleDelayMessage(System.nanoTime() + "", 3000L));
+                p.send(new SimpleDelayMessage(System.nanoTime() + "", 1000L));
+                p.send(new SimpleDelayMessage(System.nanoTime() + "", 2000L));
+            }).start();
+        }
+
 
         Consumer c = new Consumer();
         c.consume();
